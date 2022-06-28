@@ -16,16 +16,12 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
 
       ),
-      body: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        children: [
-          
-        ],
+      body: Container(
+
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){},
-        tooltip: 'Increment',
+        tooltip: 'Ny reservation',
         child: const Icon(Icons.add),
       ),
     );
