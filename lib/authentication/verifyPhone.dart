@@ -14,15 +14,14 @@ class SignupPageOTP extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPageOTP> {
   final phoneController = TextEditingController();
-  final otpController = TextEditingController();
-  final GlobalKey<FormState> _otpKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _phoneKey = GlobalKey<FormState>();
   bool validPhone = false;
 
   String? validatePhone(String? number){
-    if (isNumeric(number!) == false || number == "" || number.isEmpty){
-      return "Telefon skal kun indeholde numre!";
-    } else if (number.length < 8 || number.length > 8){
-      return "Nummeret skal være 8 cifre langt!";
+    if (number == "" || number!.isEmpty){
+      return "Feltet må ikke stå tomt.";
+    } else if (number.length < 8 || number.length > 8 || isNumeric(number) == false){
+      return "Ugyldigt telefonnummer";
     } else {
       validPhone = true;
     }
@@ -41,33 +40,34 @@ class _SignupPageState extends State<SignupPageOTP> {
             Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.only(left: 20),
-              child: Text("Autentificering", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),),
+              child: Text("Autentificering", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
             ),
             Form(
-              key: _otpKey,
+              key: _phoneKey,
               child: Column(
                 children: [
                   Container(
                       padding: EdgeInsets.only(left: 10, right: 20, top: 40),
-                      child: TextFormField(validator: validatePhone, controller: phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone_android_sharp), hintText: "Telefon", hintMaxLines: 10,),)),
+                      child: TextFormField(validator: validatePhone, keyboardType: TextInputType.phone, controller: phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone_android_sharp), hintText: "Telefon", hintMaxLines: 10,),)),
                  Container(
                         padding: EdgeInsets.only(top: 80, left: 20, right: 20, bottom: 20),
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_otpKey.currentState!.validate()){
-                              /// Navigate to OTP page where user input code from SMS
-                              Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: OTPAuthPage()));
+                            if (_phoneKey.currentState!.validate()){
+                              /// Navigate to OTP page where user input code from SMS. Send SMS to phone number
+
+                              Navigator.push(context, PageTransition(duration: Duration(milliseconds: 300), type: PageTransitionType.fade, child: OTPAuthPage()));
                             }
                           },
                           style: ElevatedButton.styleFrom(
                             textStyle: const TextStyle(fontSize: 16),
                             primary: Colors.blue,
-                            minimumSize: const Size.fromHeight(70),
+                            minimumSize: const Size.fromHeight(65),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: Text("Fortsæt", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),),
+                          child: Text("Fortsæt", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),),
                         ),
                     ),
                 ],

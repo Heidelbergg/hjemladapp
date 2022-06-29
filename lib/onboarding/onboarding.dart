@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hjemladapp/authentication/verifyPhone.dart';
-import 'package:hjemladapp/home/homepage.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -38,7 +37,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           pages: [
             PageViewModel(
               title: 'RESERVER TID',
-              body: 'Reserver en lader i et tidsrum der passer dig. Du kan reservere 4 timer ad gangen.',
+              body: 'Reserver en lader i et tidsrum der passer dig. Du kan reservere 5 timer ad gangen.',
               decoration: const PageDecoration(),
               image: Center(
                   child: SvgPicture.asset('assets/City driver-cuate.svg')
@@ -65,7 +64,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
           onDone: (){
-            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: SignupPageOTP()));
+            Navigator.pushReplacement(context, PageTransition(duration: Duration(milliseconds: 500), type: PageTransitionType.rightToLeftWithFade, child: SignupPageOTP()));
           },
         ),
       ),
