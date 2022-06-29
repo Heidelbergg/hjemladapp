@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hjemladapp/authentication/verifyPhone.dart';
 import 'package:hjemladapp/home/homepage.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:page_transition/page_transition.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -63,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
           onDone: (){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyHomePage()));
+            Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: SignupPageOTP()));
           },
         ),
       ),
