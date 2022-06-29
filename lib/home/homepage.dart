@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -16,13 +15,6 @@ class _MyHomePageState extends State<MyHomePage> {
   late LatLng _currentPosition;
   GoogleMapController? mapController;
   bool loading = true;
-
-  void _showSnackBar(BuildContext context, String text, Color color, SnackBarAction action) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(text),
-      backgroundColor: color,
-      action: action,));
-  }
 
   @override
   initState(){
