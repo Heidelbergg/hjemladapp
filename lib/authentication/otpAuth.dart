@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hjemladapp/authentication/createuser.dart';
+import 'package:hjemladapp/authentication/login.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:page_transition/page_transition.dart';
@@ -52,9 +54,6 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
             key: _otpKey,
             child: Column(
               children: [
-                /*Container(
-                    padding: EdgeInsets.only(left: 10, right: 20, top: 40),
-                    child: TextFormField(validator: validateOTP, controller: otpController, keyboardType: TextInputType.number, decoration: const InputDecoration(icon: Icon(Icons.password_sharp), hintText: "Kode", hintMaxLines: 10,),)),*/
                 Container(
                   padding: EdgeInsets.only(top: 50),
                   child: OTPTextField(
@@ -77,8 +76,8 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
                     onPressed: () {
                       if (_otpKey.currentState!.validate()){
                         /// If users phone exist = navigate to login, else navigate to signup
-                        //Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: OTPAuthPage()));
-                        //Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: OTPAuthPage()));
+                        Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: LoginPage()));
+                        //Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: CreateUserPage()));
                       }
                     },
                     style: ElevatedButton.styleFrom(
