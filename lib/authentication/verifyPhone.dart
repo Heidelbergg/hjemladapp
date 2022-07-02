@@ -40,7 +40,12 @@ class _SignupPageState extends State<SignupPageOTP> {
             Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.only(left: 20),
-              child: Text("Autentificering", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+              child: Text("Bekræftelseskode", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.only(left: 20, top: 5),
+              child: Text("Indtast dit telefonnummer for at bekræfte din identitet.", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),),
             ),
             Form(
               key: _phoneKey,
@@ -55,8 +60,7 @@ class _SignupPageState extends State<SignupPageOTP> {
                           onPressed: () {
                             if (_phoneKey.currentState!.validate()){
                               /// Navigate to OTP page where user input code from SMS. Send SMS to phone number
-
-                              Navigator.push(context, PageTransition(duration: Duration(milliseconds: 300), type: PageTransitionType.fade, child: OTPAuthPage()));
+                              Navigator.push(context, PageTransition(duration: Duration(milliseconds: 300), type: PageTransitionType.fade, child: OTPAuthPage(phone: phoneController.text.trim())));
                             }
                           },
                           style: ElevatedButton.styleFrom(
