@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:validators/validators.dart';
-
 import '../home/homepage.dart';
 
 class OTPAuthPage extends StatefulWidget {
@@ -19,18 +20,18 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
   final otpController = TextEditingController();
   final GlobalKey<FormState> _otpKey = GlobalKey<FormState>();
   bool validOTP = false;
-  late String pin = "777777";
-  late String verification = "";
+  late String pin = "null";
+  late String verification = "null";
 
   @override
   initState(){
-    registerUser(widget.phone, context);
+    _registerUser(widget.phone, context);
     super.initState();
   }
 
   String? validateOTP(String? number){
     if (number == "" || number!.isEmpty){
-      return "Feltet må ikke stå tomt.";
+      return "Feltet må ikke være tomt.";
     } else if (number.length < 6 || number.length > 6 || isNumeric(number) == false){
       return "Ugyldig kode";
     } else {
@@ -38,27 +39,31 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
     }
   }
 
-  registerUser(String mobile, BuildContext context) async {
+  _registerUser(String mobile, BuildContext context) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     auth.verifyPhoneNumber(
         phoneNumber: "+45$mobile",
         timeout: Duration(seconds: 80),
         verificationCompleted: (PhoneAuthCredential credential) async {
           await auth.signInWithCredential(credential).then((value){
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: const Text("Kode bekræftet - logget ind."),
-              duration: Duration(seconds: 5),
-              backgroundColor: Colors.green,
-            ));
+            showTopSnackBar(
+              context,
+              CustomSnackBar.success(
+                message:
+                "SMS bekræftelse godkendt automatisk",
+              ),
+            );
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage()));
           });
         },
         verificationFailed:  (FirebaseAuthException e) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.red,
-            content: Text(e.code.toString()),
-            duration: Duration(seconds: 10),
-          ));
+          showTopSnackBar(
+            context,
+            CustomSnackBar.error(
+              message:
+              "Fejl under bekræftelse - ${e.code}",
+            ),
+          );
         },
         codeSent: (String verificationId, int? resendToken) {
           setState((){
@@ -68,45 +73,62 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
         codeAutoRetrievalTimeout: (String verificationId) {
           User? user = FirebaseAuth.instance.currentUser;
           if (user == null){
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: Colors.red,
-              content: const Text("SMS bekræftelse udløb. Gå tilbage og prøv igen."),
-              duration: Duration(seconds: 5),
-            ));
+            showTopSnackBar(
+              context,
+              CustomSnackBar.error(
+                message:
+                "SMS bekræftelse udløb. Gå tilbage og prøv igen",
+              ),
+            );
           }
         }
     );}
 
-  signUserIn(String smsCode) async {
+  _signUserIn(String smsCode) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verification, smsCode: smsCode);
     try {
       await auth.signInWithCredential(credential);
-      Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: MyHomePage()));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: Colors.green,
-        content: const Text("SMS bekræftelse godkendt"),
-        duration: Duration(seconds: 5),
-      ));
+      if(!mounted) return;
+      Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: MyHomePage()));
+      showTopSnackBar(
+        context,
+        CustomSnackBar.success(
+          message:
+          "SMS bekræftelseskode godkendt",
+        ),
+      );
     } on FirebaseAuthException catch (e){
       if (e.code == "invalid-verification-code"){
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("Forkert bekræftelseskode"),
-          duration: Duration(seconds: 5),
-        ));
+        showTopSnackBar(
+          context,
+          CustomSnackBar.error(
+            message:
+            "Forkert bekræftelseskode",
+          ),
+        );
+        return;
+      } else if (e.code == "invalid-verification-id"){
+        showTopSnackBar(
+          context,
+          CustomSnackBar.error(
+            message:
+            "En fejl opstod. Gå tilbage og prøv igen.",
+          ),
+        );
         return;
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("${e.code} - prøv igen"),
-          duration: Duration(seconds: 10),
-        ));
+        showTopSnackBar(
+          context,
+          CustomSnackBar.error(
+            message:
+            "${e.code} - Prøv igen",
+          ),
+        );
         return;
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +143,7 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(left: 20),
-            child: Text("Bekræftelseskode", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+            child: Text("Engangsbekræftelse", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
           ),
           Container(
             alignment: Alignment.centerLeft,
@@ -150,20 +172,12 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 80, left: 20, right: 20, bottom: 20),
+                  padding: EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
                   child: ElevatedButton(
                     onPressed: () {
                       if (_otpKey.currentState!.validate()){
-                        /// If users phone exist = login user, else navigate to signup screen
-                        //Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: CreateUserPage()));
-                        if (pin == ""){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: const Text("Feltet må ikke stå tomt."),
-                            duration: Duration(seconds: 20),
-                          ));
-                        } else {
-                          signUserIn(pin);
-                        }
+                        /// Login user manually using OTP - if automatic code extraction is not possbile
+                        _signUserIn(pin);
                       }
                     },
                     style: ElevatedButton.styleFrom(

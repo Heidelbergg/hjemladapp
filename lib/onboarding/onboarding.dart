@@ -64,7 +64,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
           onDone: (){
-            Navigator.pushReplacement(context, PageTransition(duration: Duration(milliseconds: 500), type: PageTransitionType.rightToLeftWithFade, child: SignupPageOTP()));
+            Navigator.pushReplacement(context, PageTransition(duration: Duration(milliseconds: 300), type: PageTransitionType.rightToLeft, child: SignupPageOTP()));
           },
         ),
       ),

@@ -19,7 +19,7 @@ class _SignupPageState extends State<SignupPageOTP> {
 
   String? validatePhone(String? number){
     if (number == "" || number!.isEmpty){
-      return "Feltet må ikke stå tomt.";
+      return "Feltet må ikke være tomt.";
     } else if (number.length < 8 || number.length > 8 || isNumeric(number) == false){
       return "Ugyldigt telefonnummer";
     } else {
@@ -40,7 +40,7 @@ class _SignupPageState extends State<SignupPageOTP> {
             Container(
               alignment: Alignment.centerLeft,
               padding: EdgeInsets.only(left: 20),
-              child: Text("Bekræftelseskode", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+              child: Text("Engangsbekræftelse", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
             ),
             Container(
               alignment: Alignment.centerLeft,
@@ -52,15 +52,19 @@ class _SignupPageState extends State<SignupPageOTP> {
               child: Column(
                 children: [
                   Container(
-                      padding: EdgeInsets.only(left: 10, right: 20, top: 40),
-                      child: TextFormField(validator: validatePhone, keyboardType: TextInputType.phone, controller: phoneController, decoration: const InputDecoration(icon: Icon(Icons.phone_android_sharp), hintText: "Telefon", hintMaxLines: 10,),)),
+                      padding: EdgeInsets.only(left: 20, right: 20, top: 40),
+                      child: TextFormField(validator: validatePhone,
+                        keyboardType: TextInputType.phone,
+                        controller: phoneController,
+                        decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)), hintText: "21 22 23 24", hintStyle: TextStyle(color: Colors.grey[400]),),)),
                  Container(
-                        padding: EdgeInsets.only(top: 80, left: 20, right: 20, bottom: 20),
+                        padding: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 20),
                         child: ElevatedButton(
                           onPressed: () {
                             if (_phoneKey.currentState!.validate()){
                               /// Navigate to OTP page where user input code from SMS. Send SMS to phone number
-                              Navigator.push(context, PageTransition(duration: Duration(milliseconds: 300), type: PageTransitionType.fade, child: OTPAuthPage(phone: phoneController.text.trim())));
+                              Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: OTPAuthPage(phone: phoneController.text), curve: Curves.easeInOutSine));
+                              phoneController.clear();
                             }
                           },
                           style: ElevatedButton.styleFrom(
