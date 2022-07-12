@@ -1,4 +1,4 @@
 # hjemladapp
 
-Reservation af ladestandere hos boligforeninger.
+Leje af elbiler til dele i Odense-området.
 
