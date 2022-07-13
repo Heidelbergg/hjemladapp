@@ -30,6 +30,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
   introduction_screen: ^3.0.2
   flutter_svg: ^1.1.0
   google_maps_flutter: ^2.1.8
@@ -39,7 +42,7 @@ dependencies:
   fluttertoast: ^8.0.9
   validators: ^3.0.0
   page_transition: ^2.0.9
-  #animations: ^2.0.3
+  animations: ^2.0.3
   flutter_otp_text_field: ^1.0.1
   top_snackbar_flutter: ^2.0.0
 

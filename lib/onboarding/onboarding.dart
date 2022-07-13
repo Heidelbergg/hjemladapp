@@ -36,8 +36,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           pages: [
             PageViewModel(
-              title: 'RESERVER TID',
-              body: 'Reserver en lader i et tidsrum der passer dig. Du kan reservere 5 timer ad gangen.',
+              title: 'FIND ELBIL',
+              body: 'Find en elbil nær dig. Du betaler kun for antal kørte kilometer.',
               decoration: const PageDecoration(),
               image: Center(
                   child: SvgPicture.asset('assets/City driver-cuate.svg')
@@ -45,25 +45,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               reverse: true,
             ),
             PageViewModel(
-              title: 'SCAN OG LAD',
-              body: 'Scan QR koden på ladestanderen med din telefon og start opladningen - nemt og enkelt.',
+              title: 'LÅS OP OG KØR',
+              body: 'Lås elbilen op igennem din telefon, og start turen.',
+              decoration: const PageDecoration(),
+              image: Center(
+                  child: SvgPicture.asset('assets/Car driving-bro.svg')
+              ),
+              reverse: true,
+            ),
+            PageViewModel(
+              title: 'AFSLUT OG LAD OP',
+              body: 'Færdiggør din tur og tilslut elbilen til en lader.' ,
               decoration: const PageDecoration(),
               image: Center(
                   child: SvgPicture.asset('assets/Electric car-cuate.svg')
               ),
               reverse: true,
             ),
-            PageViewModel(
-              title: 'KUN TIL BEBOERNE',
-              body: 'Laderne i din boligforening er kun tilgængelige til beboere med elbil. ',
-              decoration: const PageDecoration(),
-              image: Center(
-                  child: SvgPicture.asset('assets/Houses-cuate.svg')
-              ),
-              reverse: true,
-            ),
           ],
-          onDone: (){
+          onDone: () {
             Navigator.pushReplacement(context, PageTransition(duration: Duration(milliseconds: 300), type: PageTransitionType.rightToLeft, child: SignupPageOTP()));
           },
         ),

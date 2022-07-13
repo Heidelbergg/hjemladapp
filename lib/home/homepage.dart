@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hjemladapp/authentication/createuser.dart';
+import 'package:hjemladapp/authentication/createUser.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -18,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late LatLng _currentPosition;
   GoogleMapController? mapController;
   bool loading = true;
+  late AnimationController localAnimationController;
 
   @override
   initState(){
@@ -40,11 +41,16 @@ class _MyHomePageState extends State<MyHomePage> {
     showTopSnackBar(
       context,
       persistent: true,
-      onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateUserPage()));},
+      onTap: (){
+        localAnimationController.reverse();
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateUserPage())).then((value) {setState((){_checkIfUserExists();});});
+        },
+      onAnimationControllerInit: (controller) =>
+      localAnimationController = controller,
       CustomSnackBar.info(
         maxLines: 3,
         message:
-        "Færdiggør din profil for at gøre brug af laderne i din boligforening. Tryk her.",
+        "Færdiggør din profil for at få adgang til elbilerne i dit nærområde. Tryk her.",
       ),
     );
   }
@@ -78,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: () async {permission = await Geolocator.requestPermission();},
           CustomSnackBar.error(
             message:
-            "Kunne ikke fastslå din lokation. Giv tilladelse for at vise ladere i nærheden.",
+            "Kunne ikke fastslå din lokation. Giv tilladelse for at vise elbiler i nærheden.",
           ),
         );
         loading = false;
@@ -130,6 +136,8 @@ class _MyHomePageState extends State<MyHomePage> {
               });
             },
             zoomControlsEnabled: false,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
             initialCameraPosition: CameraPosition(target: _currentPosition, zoom: 17),
           ),
         ]
