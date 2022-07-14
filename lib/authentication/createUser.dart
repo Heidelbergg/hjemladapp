@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hjemladapp/authentication/userIdentification.dart';
-import 'package:hjemladapp/home/homepage.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:intl/intl.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 
 class CreateUserPage extends StatefulWidget {
@@ -17,6 +19,7 @@ class CreateUserPage extends StatefulWidget {
 class _CreateUserPageState extends State<CreateUserPage> {
   final GlobalKey<FormState> _createUserKey = GlobalKey<FormState>();
   get getUserPhone => FirebaseAuth.instance.currentUser;
+  final CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
   String? phone;
 
   // First name
@@ -26,7 +29,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
   final surnameController = TextEditingController();
   bool validSurname = false;
   // E-mail
-  final emaiLController = TextEditingController();
+  final emailController = TextEditingController();
   bool validEmail = false;
   // Address
   final addressController = TextEditingController();
@@ -74,19 +77,6 @@ class _CreateUserPageState extends State<CreateUserPage> {
                   children: [
                     Icon(Icons.check_circle_outline, color: Colors.green,),
                    Text(" ${phone!.substring(3,5)} ${phone!.substring(5,7)} ${phone!.substring(7,9)} ${phone!.substring(9,11)}"),
-                   /* FutureBuilder(
-                        future: getUserPhone,
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            var user = snapshot.data as DocumentSnapshot;
-                            return Text(user.);
-                          } else if (snapshot.hasError) {
-                            return Icon(Icons.error_outline);
-                          } else {
-                            return CircularProgressIndicator();
-                          }
-                        })*/
                   ],
                 )
             ),
@@ -111,7 +101,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                 child: TextFormField(
                   //validator: validateEmail,
                   keyboardType: TextInputType.emailAddress,
-                  controller: emaiLController,
+                  controller: emailController,
                   decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                     enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26), borderRadius: BorderRadius.circular(15)), hintText: "E-mail", hintStyle: TextStyle(color: Colors.grey[400]),),)),
             Container(
@@ -145,6 +135,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
                     },
                   child: IgnorePointer(
                     child: TextFormField(
+                      //validator: validateBirthdate,
                       enabled: false,
                       controller: birthdayController,
                       decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -155,10 +146,40 @@ class _CreateUserPageState extends State<CreateUserPage> {
             Container(
               padding: EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_createUserKey.currentState!.validate()){
                     /// Save to db - navigate to home
-                    Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: UserIdentificationPage(), curve: Curves.easeInOutSine));
+                    try{
+                      User? userCredential = FirebaseAuth.instance.currentUser;
+                      usersRef.doc(userCredential?.uid).get().then((DocumentSnapshot documentSnapshot) async {
+                        if (documentSnapshot.exists) {
+                          showTopSnackBar(context, CustomSnackBar.error(message: "Bruger eksisterer allerede",),);
+                          return;
+                        } else if (!documentSnapshot.exists) {
+                          // get token
+                          String? token;
+                          await FirebaseMessaging.instance.getToken().then((value) {token = value;});
+
+                          // save user cred to db
+                          await usersRef.doc(userCredential?.uid).set({
+                            'email': emailController.text,
+                            'fname': fNameController.text,
+                            'lname': surnameController.text,
+                            'address': addressController.text,
+                            'country': 'Denmark',
+                            'birthday': birthdayController.text,
+                            'phone': phone,
+                            'token': token,
+                            'isActivated': false
+                          });
+                          if (mounted){
+                            Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: UserIdentificationPage(), curve: Curves.easeInOutSine));
+                          }
+                        }
+                      });
+                    } on FirebaseAuthException catch(e){
+                      showTopSnackBar(context, CustomSnackBar.error(message: "Fejl ved oprettelse - ${e.code}",),);
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(

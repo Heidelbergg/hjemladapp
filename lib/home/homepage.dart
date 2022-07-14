@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,6 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
   GoogleMapController? mapController;
   bool loading = true;
   late AnimationController localAnimationController;
+  final CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
 
   @override
   initState(){
@@ -38,21 +41,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
   _checkIfUserExists() async {
     /// if user does not exist, display snackbar with onTap to createUser
-    showTopSnackBar(
-      context,
-      persistent: true,
-      onTap: (){
-        localAnimationController.reverse();
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateUserPage())).then((value) {setState((){_checkIfUserExists();});});
-        },
-      onAnimationControllerInit: (controller) =>
-      localAnimationController = controller,
-      CustomSnackBar.info(
-        maxLines: 3,
-        message:
-        "Færdiggør din profil for at få adgang til elbilerne i dit nærområde. Tryk her.",
-      ),
-    );
+    User? userCredential = FirebaseAuth.instance.currentUser;
+    usersRef.doc(userCredential?.uid).get().then((DocumentSnapshot documentSnapshot) async {
+      if (!documentSnapshot.exists) {
+        showTopSnackBar(
+          context,
+          persistent: true,
+          onTap: (){
+            localAnimationController.reverse();
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateUserPage())).then((value) {setState((){_checkIfUserExists();});});
+          },
+          onAnimationControllerInit: (controller) =>
+          localAnimationController = controller,
+          CustomSnackBar.info(
+            maxLines: 3,
+            message:
+            "Færdiggør din profil for at få adgang til elbilerne i dit nærområde. Tryk her.",
+          ),
+        );
+      }
+    });
   }
 
   _getCurrentPosition() async {
