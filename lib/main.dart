@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const OnboardingScreen(),
+      //home: const OnboardingScreen(),
+      home: checkHome(),
       //home: checkHome(),
     );
   }

@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hjemladapp/authentication/createUser.dart';
+import 'package:hjemladapp/home/reservations.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
@@ -138,6 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 size: 50,
               )) :
           GoogleMap(
+            mapType: MapType.normal,
             onMapCreated: (controller){
               setState((){
                 mapController = controller;
@@ -148,7 +151,36 @@ class _MyHomePageState extends State<MyHomePage> {
             myLocationButtonEnabled: false,
             initialCameraPosition: CameraPosition(target: _currentPosition, zoom: 17),
           ),
+          Container(
+            alignment: Alignment.topRight,
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 15, right: 15),
+            child: SpeedDial(
+              spacing: 10,
+              animatedIcon: AnimatedIcons.menu_close,
+              direction: SpeedDialDirection.down,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              icon: Icons.menu,
+              children: [
+                SpeedDialChild(
+                  child: Icon(Icons.person_outline, color: Colors.blue,),
+                  label: 'Profil'
+                ),
+                SpeedDialChild(
+                    child: Icon(Icons.favorite_outline, color: Colors.blue,),
+                    label: "Favoritter"
+                ),
+                SpeedDialChild(
+                  child: Icon(Icons.calendar_month_outlined, color: Colors.blue,),
+                  label: "Reservationer",
+                  onTap: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ReservationPage()));
+                  }
+                ),
+              ],
+            ),
+          ),
         ]
+
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: Wrap(
@@ -159,12 +191,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: FloatingActionButton(
                 heroTag: "addBtn",
                 onPressed: (){
-                  //action code for button 1
+                  //Find nearest EV
                 },
-                child: Icon(Icons.add),
+                child: Icon(Icons.electric_car_outlined),
               )
           ),
-
           Container(
               margin:EdgeInsets.all(10),
               child: FloatingActionButton(
@@ -174,10 +205,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       CameraUpdate.newCameraPosition(CameraPosition(target: _currentPosition, zoom: 18))
                   );
                 },
-                child: Icon(Icons.location_searching),
+                child: Icon(Icons.my_location),
               )
           ), // button second
-
         ],),
     );
   }
