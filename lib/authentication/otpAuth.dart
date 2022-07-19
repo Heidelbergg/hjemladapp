@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
@@ -45,18 +47,20 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
         phoneNumber: "+45$mobile",
         timeout: Duration(seconds: 80),
         verificationCompleted: (PhoneAuthCredential credential) async {
-          await auth.signInWithCredential(credential).then((value){
-            showTopSnackBar(
-              context,
-              CustomSnackBar.success(
-                message:
-                "SMS bekræftelse godkendt automatisk",
-              ),
-            );
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage()));
-          });
+          if (Platform.isAndroid){
+            await auth.signInWithCredential(credential).then((value){
+              showTopSnackBar(
+                context,
+                CustomSnackBar.success(
+                  message:
+                  "SMS bekræftelse godkendt automatisk",
+                ),
+              );
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage()));
+            });
+          }
         },
-        verificationFailed:  (FirebaseAuthException e) {
+        verificationFailed: (FirebaseAuthException e) {
           showTopSnackBar(
             context,
             CustomSnackBar.error(

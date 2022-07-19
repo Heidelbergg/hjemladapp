@@ -48,11 +48,11 @@ dependencies:
   flutter_speed_dial: ^6.0.0
 
   #Firebase
-  firebase_auth: ^3.3.20
-  firebase_messaging: ^11.4.2
-  cloud_firestore: ^3.1.18
-  firebase_core: ^1.18.0
-  firebase_in_app_messaging: ^0.6.0+16
+  firebase_auth: ^3.4.2
+  firebase_messaging: ^12.0.0
+  cloud_firestore: ^3.3.0
+  firebase_core: ^1.19.0
+  #firebase_in_app_messaging: ^0.6.0+19
 
 
   # The following adds the Cupertino Icons font to your application.
