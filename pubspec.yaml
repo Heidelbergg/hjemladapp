@@ -46,6 +46,9 @@ dependencies:
   flutter_otp_text_field: ^1.0.1
   top_snackbar_flutter: ^2.0.0
   flutter_speed_dial: ^6.0.0
+  flutter_secure_storage: ^5.0.2
+  shared_preferences: ^2.0.15
+  is_first_run: ^1.0.0
 
   #Firebase
   firebase_auth: ^3.4.2

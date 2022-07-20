@@ -137,6 +137,10 @@ class _OTPAuthPageState extends State<OTPAuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20,),),
+      ),
       body:  ListView(
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),

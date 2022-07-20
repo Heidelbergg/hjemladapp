@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:is_first_run/is_first_run.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:hjemladapp/home/homepage.dart';
 import 'package:hjemladapp/onboarding/onboarding.dart';
@@ -8,6 +12,27 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  // delete cached user data on first run (in case of uninstall)
+  if (Platform.isIOS){
+    bool firstRun = await IsFirstRun.isFirstRun();
+    if (firstRun == true) {
+      FlutterSecureStorage storage = FlutterSecureStorage();
+      await storage.deleteAll();
+    }
+  }
+  // notifications permission
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
   runApp(const MyApp());
 }
 
