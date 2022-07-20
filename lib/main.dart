@@ -1,6 +1,3 @@
-import 'dart:io';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:is_first_run/is_first_run.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -14,13 +11,15 @@ void main() async {
   await Firebase.initializeApp();
 
   // delete cached user data on first run (in case of uninstall)
-  if (Platform.isIOS){
+  /*if (Platform.isIOS){
     bool firstRun = await IsFirstRun.isFirstRun();
+    print(firstRun);
     if (firstRun == true) {
       FlutterSecureStorage storage = FlutterSecureStorage();
       await storage.deleteAll();
+      await IsFirstRun.reset();
     }
-  }
+  }*/
   // notifications permission
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   await messaging.requestPermission(
@@ -44,7 +43,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-
     Widget checkHome(){
       return user == null? const OnboardingScreen() : const MyHomePage();
     }

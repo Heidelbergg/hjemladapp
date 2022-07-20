@@ -61,6 +61,8 @@ class _CreateUserPageState extends State<CreateUserPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_ios, size: 20,),),
       ),
       body: Form(
@@ -71,7 +73,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(left: 20, top: 50),
+              padding: EdgeInsets.only(left: 20, top: 20),
               child: Text("Færdiggør din profil", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
             ),
             Container(
