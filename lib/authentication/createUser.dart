@@ -7,6 +7,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:intl/intl.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:validators/validators.dart';
 
 
 class CreateUserPage extends StatefulWidget {
@@ -42,6 +43,39 @@ class _CreateUserPageState extends State<CreateUserPage> {
   bool validBirthday = false;
   late String birthdate;
 
+  String? validateEmail(String? email){
+    if (email == null || email.isEmpty){
+      return "Indsæt e-mail";
+    } else if (!email.contains("@") || !email.contains(".")){
+      return "Ugyldig e-mail";
+    }
+  }
+
+  String? validatePassword(String? password){
+    if (password == null || password.isEmpty){
+      return "Indsæt password";
+    }
+  }
+
+  String? validateName(String? name){
+    if (name == null || name.isEmpty || name == ""){
+      return "Ugyldigt input";
+    }
+  }
+
+  String? validateBirthdate(String? name){
+    if (birthdayController.text.isEmpty){
+      return "Ugyldig fødselsdato";
+    }
+  }
+
+  String? validatePhone(String? number){
+    if (isNumeric(number!) == false || number == "" || number.isEmpty){
+      return "Telefon skal kun indeholde numre!";
+    } else if (number.length < 8 || number.length > 8){
+      return "Nummeret skal være 8 cifre langt!";
+    }
+  }
 
   @override
   void initState() {
@@ -89,7 +123,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
             Container(
                 padding: EdgeInsets.only(left: 20, right: 20, top: 40),
                 child: TextFormField(
-                  //validator: validateName,
+                  validator: validateName,
                   keyboardType: TextInputType.name,
                   controller: fNameController,
                   decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -97,7 +131,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
             Container(
                 padding: EdgeInsets.only(left: 20, right: 20, top: 10),
                 child: TextFormField(
-                  //validator: validateName,
+                  validator: validateName,
                   keyboardType: TextInputType.name,
                   controller: surnameController,
                   decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -105,7 +139,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
             Container(
                 padding: EdgeInsets.only(left: 20, right: 20, top: 10),
                 child: TextFormField(
-                  //validator: validateEmail,
+                  validator: validateEmail,
                   keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -113,7 +147,7 @@ class _CreateUserPageState extends State<CreateUserPage> {
             Container(
                 padding: EdgeInsets.only(left: 20, right: 20, top: 10),
                 child: TextFormField(
-                  //validator: validateAddress,
+                  validator: validateName,
                   keyboardType: TextInputType.streetAddress,
                   controller: addressController,
                   decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -141,8 +175,8 @@ class _CreateUserPageState extends State<CreateUserPage> {
                     },
                   child: IgnorePointer(
                     child: TextFormField(
-                      //validator: validateBirthdate,
-                      enabled: false,
+                      validator: validateBirthdate,
+                      //enabled: false,
                       controller: birthdayController,
                       decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black26), borderRadius: BorderRadius.circular(15)), hintText: birthdate, hintStyle: TextStyle(color: Colors.grey[400]),),),

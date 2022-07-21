@@ -6,6 +6,8 @@ import 'package:hjemladapp/home/homepage.dart';
 import 'package:hjemladapp/onboarding/onboarding.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'authentication/userIdentification.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -63,8 +65,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      //home: const OnboardingScreen(),
-      home: checkHome(),
+      home: const UserIdentificationPage(),
       //home: checkHome(),
     );
   }

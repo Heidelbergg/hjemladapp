@@ -3,8 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Denne app skal have adgang til din placering, når den er i brug.
-</string>
+	<string>Denne app skal have adgang til din placering, når den er i brug.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Denne app skal have adgang til dit kamera, når det er nødvendigt.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

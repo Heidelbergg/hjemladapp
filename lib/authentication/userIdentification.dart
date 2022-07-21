@@ -1,5 +1,7 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:hjemladapp/authentication/linkPayment.dart';
+import 'package:hjemladapp/authentication/takePicture.dart';
 import 'package:page_transition/page_transition.dart';
 
 class UserIdentificationPage extends StatefulWidget {
@@ -10,6 +12,9 @@ class UserIdentificationPage extends StatefulWidget {
 }
 
 class _UserIdentificationPageState extends State<UserIdentificationPage> {
+  late CameraController _cameraController;
+  late Future<void> _initializeControllerFuture;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,15 +34,30 @@ class _UserIdentificationPageState extends State<UserIdentificationPage> {
           ),
           Container(
             padding: EdgeInsets.only(top: 30, right: 20, left: 20),
-            child: ElevatedButton(onPressed: () {  }, child: Text("Vedhæft kørekort (Front)"),),
+            child: ElevatedButton(onPressed: () async {
+              final cameras = await availableCameras();
+              final firstCamera = cameras.first;
+              if (!mounted) return;
+              Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: TakePictureScreen(camera: firstCamera, title: 'Kørekort (Front)',), curve: Curves.easeInOutSine));
+            }, child: Text("Vedhæft kørekort (Front)"),),
           ),
           Container(
             padding: EdgeInsets.only(top: 10, right: 20, left: 20),
-            child: ElevatedButton(onPressed: () {  }, child: Text("Vedhæft kørekort (Bag)"),),
+            child: ElevatedButton(onPressed: () async {
+              final cameras = await availableCameras();
+              final firstCamera = cameras.first;
+              if (!mounted) return;
+              Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: TakePictureScreen(camera: firstCamera, title: 'Kørekort (Bag)',), curve: Curves.easeInOutSine));
+            }, child: Text("Vedhæft kørekort (Bag)"),),
           ),
           Container(
             padding: EdgeInsets.only(top: 10, right: 20, left: 20),
-            child: ElevatedButton(onPressed: () {  }, child: Text("Vedhæft selfie"),),
+            child: ElevatedButton(onPressed: () async {
+              final cameras = await availableCameras();
+              final firstCamera = cameras[1];
+              if (!mounted) return;
+              Navigator.push(context, PageTransition(duration: Duration(milliseconds: 200), type: PageTransitionType.rightToLeft, child: TakePictureScreen(camera: firstCamera, title: 'Selfie',), curve: Curves.easeInOutSine));
+            }, child: Text("Vedhæft selfie"),),
           ),
           Container(
             padding: EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 20),
